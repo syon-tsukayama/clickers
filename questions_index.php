@@ -41,7 +41,7 @@ body
                 <tr>
                     <td>1</td>
                     <td>りんごの色？</td>
-                    <td>回答ページへ</td>
+                    <td><a href="./answer_form.php" class="btn btn-primary">回答ページへ</a></td>
                 </tr>
             </table>
         </div>
