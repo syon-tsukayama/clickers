@@ -1,89 +1,116 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8">
-        <title>くりっかー</title>
-        <link href="./css/bootstrap.min.css" rel="stylesheet">
-        <style type="text/css">
-body
+<?php
+session_start();
+
+//        print_r($_SESSION);
+// 共通機能読み込み
+require_once('common.php');
+
+if(!check_loggedin())
 {
-    padding-top: 50px;
+    header('Location: http://localhost/clickers/login_form.php');
 }
-        </style>
-        <script type="text/javascript" src="./js/jquery-2.1.4.min.js"></script>
-        <script type="text/javascript" src="./js/bootstrap.min.js"></script>
+?>
+<html>
+
+    <head>
+        <meta content="text/html; charset=utf-8">
+        <title>回答入力</title>
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <script src="js/jquery-2.1.4.js"></script>
+        <script src="js/bootstrap.min.js"></script>
     </head>
 
     <body>
-        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-            <div class="container">
-                <div class="navbar-header">
-                    <a href="#" class="navbar-brand">くりっかー</a>
-                </div>
-                <div class="collapse navbar-collapse">
-                    <ul class="nav navbar-nav">
-                    </ul>
-                </div>
-            </div>
+        <nav class="navbar navbar-inverse">
+            <p class="navbar-text pull-right">
+                <?php echo $_SESSION['user_name']; ?>
+                <a href="logout.php" class="navbar-link">ログアウト</a>
+            </p>
         </nav>
 
-        <div class="container">
-            <div class="page-header">
-                <h3>回答ページ</h3>
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-md-1"></div>
+                <div class="col-md-10">
+                    <h2>回答入力</h2>
+
+        <?php
+
+        // データベース接続処理
+        $conn = connect_database();
+        if($conn)
+        {
+            $question_id = trim($_GET['question_id']);
+
+            // 検索SQL
+            $sql =<<<EOS
+SELECT * FROM `questions` WHERE `id` = :question_id
+EOS;
+
+            $stmt = $conn->prepare($sql);
+            $stmt->bindValue(':question_id', $question_id);
+
+            $result = $stmt->execute();
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+//            print_r($row);
+        ?>
+        <form action="answer.php" method="post">
+        <table class="table">
+            <tr>
+                <td>質問：</td>
+                <td>
+                    <?php echo $row['content']; ?>
+                    <input type="hidden" name="question_id" value="<?php echo $row['id']; ?>">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="submit" name="answer_1" value="回答1" class="btn btn-primary">
+                </td>
+                <td>
+                    <?php echo $row['answer_1']; ?>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="submit" name="answer_2" value="回答2" class="btn btn-success">
+                </td>
+                <td>
+                    <?php echo $row['answer_2']; ?>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="submit" name="answer_3" value="回答3" class="btn btn-warning">
+                </td>
+                <td>
+                    <?php echo $row['answer_3']; ?>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="submit" name="answer_4" value="回答4" class="btn btn-danger">
+                </td>
+                <td>
+                    <?php echo $row['answer_4']; ?>
+                </td>
+            </tr>
+        </table>
+        </form>
+        <a href="questions_index.php" class="btn btn-default">質問一覧へもどる</a>
+
+        <?php
+        }
+        else
+        {
+            echo '接続失敗';
+        }
+        ?>
+                </div>
+                <div class="col-md-1"></div>
             </div>
-
-            <form action="answer.php" method="post" class="form-horizontal" role="form">
-
-                <div class="form-group">
-                    <label class="col-md-2 control-label">質問内容</label>
-                    <div class="col-md-4">
-                        <p class="form-control-static">
-                            ろんごの色？
-                        </p>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="col-md-2 control-label">回答１</label>
-                    <div class="col-md-4">
-                        <p class="form-control-static">赤</p>
-                    </div>
-                    <div class="col-md-2">
-                        <input type="submit" name="answer_1" value="回答" class="btn btn-danger" />
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="col-md-2 control-label">回答２</label>
-                    <div class="col-md-4">
-                        <p class="form-control-static">緑</p>
-                    </div>
-                    <div class="col-md-2">
-                        <input type="submit" name="answer_2" value="回答" class="btn btn-warning" />
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="col-md-2 control-label">回答３</label>
-                    <div class="col-md-4">
-                        <p class="form-control-static">黄</p>
-                    </div>
-                    <div class="col-md-2">
-                        <input type="submit" name="answer_3" value="回答" class="btn btn-info" />
-                    </div>
-                </div>
-
-
-                <div class="form-group">
-                    <label class="col-md-2 control-label">回答４</label>
-                    <div class="col-md-4">
-                        <p class="form-control-static">白</p>
-                    </div>
-                    <div class="col-md-2">
-                        <input type="submit" name="answer_4" value="回答" class="btn btn-success" />
-                    </div>
-                </div>
-            </form>
         </div>
     </body>
 

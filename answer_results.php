@@ -1,68 +1,134 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8">
-        <title>くりっかー</title>
-        <link href="./css/bootstrap.min.css" rel="stylesheet">
-        <style type="text/css">
-body
+<?php
+session_start();
+
+//        print_r($_SESSION);
+// 共通機能読み込み
+require_once('common.php');
+
+if(!check_loggedin())
 {
-    padding-top: 50px;
+    header('Location: http://localhost/clickers/login_form.php');
 }
-        </style>
-        <script type="text/javascript" src="./js/jquery-2.1.4.min.js"></script>
-        <script type="text/javascript" src="./js/bootstrap.min.js"></script>
-        <script type="text/javascript" src="./js/Chart.min.js"></script>
+?>
+<html>
+
+    <head>
+        <meta content="text/html; charset=utf-8">
+        <title>回答結果</title>
+        <script src="./js/Chart.js"></script>
     </head>
 
     <body>
-        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-            <div class="container">
-                <div class="navbar-header">
-                    <a href="#" class="navbar-brand">くりっかー</a>
-                </div>
-                <div class="collapse navbar-collapse">
-                    <ul class="nav navbar-nav">
-                    </ul>
-                </div>
-            </div>
-        </nav>
+        <?php
 
-        <div class="container">
-            <div class="page-header">
-                <h3>回答結果グラフ</h3>
-            </div>
+        // データベース接続処理
+        $conn = connect_database();
+        if($conn)
+        {
+//            echo '接続成功';
+            $question_id = trim($_GET['question_id']);
 
-            <div class="row">
-                <div class="col-md-8">
-                    <canvas id="sample" class="col-md-12"></canvas>
-                    <script>
-var doughnutData = [
-　　{
-　　　value: 30,
-　　　color:"#d9534f"
-　　},
-　　{
-　　　value: 50,
-　　　color: "#f0ad4e"
-　　},
-　　{
-　　　value: 120,
-　　　color: "#5bc0de"
-　　},
-   {
-　　　value: 50,
-　　　color: "#5cb85c"
-　　}
+            // 検索SQL
+            $sql =<<<EOS
+SELECT `id`, `answer_id`, `user_id` FROM `answer_results`
+WHERE `question_id` = :question_id
+EOS;
+
+            $stmt = $conn->prepare($sql);
+            $stmt->bindValue(':question_id', $question_id);
+
+            $result = $stmt->execute();
+
+            ?>
+            <table border="1">
+                <tr>
+                    <td>ID</td>
+                    <td>回答ID</td>
+                    <td>ユーザID</td>
+                </tr>
+            <?php
+            // 集計用配列初期化
+            $sum_answers = array(
+                1 => 0,
+                2 => 0,
+                3 => 0,
+                4 => 0
+                );
+            while($row = $stmt->fetch(PDO::FETCH_ASSOC))
+            {
+                // 回答件数+1
+                $sum_answers[$row['answer_id']]++;
+                ?>
+                <tr>
+                    <td><?php echo $row['id'] ?></td>
+                    <td><?php echo $row['answer_id']; ?></td>
+                    <td><?php echo $row['user_id']; ?></td>
+                </tr>
+                <?php
+            }
+            ?>
+            </table>
+
+
+            <table border="1">
+                <tr>
+                    <td>回答ID</td>
+                    <td>件数</td>
+                </tr>
+                <?php
+                foreach($sum_answers as $answer_id => $count_value)
+                {
+                ?>
+                <tr>
+                    <td><?php echo $answer_id; ?></td>
+                    <td><?php echo $count_value; ?></td>
+                </tr>
+                <?php
+                }
+                ?>
+            </table>
+
+            <canvas id="myChart" width="400" height="400"></canvas>
+
+            <script type="text/javascript">
+var data = [
+    {
+        value: <?php echo $sum_answers[1] ?>,
+        color:"#F7464A",
+        highlight: "#FF5A5E",
+        label: "回答１"
+    },
+    {
+        value: <?php echo $sum_answers[2] ?>,
+        color: "#46BFBD",
+        highlight: "#5AD3D1",
+        label: "回答２"
+    },
+    {
+        value: <?php echo $sum_answers[3] ?>,
+        color: "#FDB45C",
+        highlight: "#FFC870",
+        label: "回答３"
+    },
+    {
+        value: <?php echo $sum_answers[4] ?>,
+        color: "black",
+        highlight: "#FFC870",
+        label: "回答４"
+    }
 ];
+var myDoughnutChart = new Chart(document.getElementById("myChart").getContext("2d")).Doughnut(data);
+            </script>
 
-var myDoughnut = new Chart(document.getElementById("sample").getContext("2d")).Doughnut(doughnutData);
-                    </script>
-                </div>
+            <a href="questions_index.php">質問一覧へもどる</a>
+            <?php
 
-                <div class="col-md-4"></div>
-            </div>
-        </div>
+        }
+        else
+        {
+            echo '接続失敗';
+        }
+        ?>
     </body>
 
 </html>

@@ -1,59 +1,45 @@
-<!DOCTYPE html>
 <html>
+
     <head>
-        <meta charset="utf-8">
-        <title>くりっかー</title>
-        <link href="./css/bootstrap.min.css" rel="stylesheet">
-        <style type="text/css">
-body
-{
-    padding-top: 50px;
-}
-        </style>
-        <script type="text/javascript" src="./js/jquery-2.1.4.min.js"></script>
-        <script type="text/javascript" src="./js/bootstrap.min.js"></script>
+        <meta content="text/html; charset=utf-8">
+        <title>ログインページ</title>
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <script src="js/jquery-2.1.4.js"></script>
+        <script src="js/bootstrap.min.js"></script>
     </head>
 
     <body>
-        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-            <div class="container">
-                <div class="navbar-header">
-                    <a href="#" class="navbar-brand">くりっかー</a>
-                </div>
-                <div class="collapse navbar-collapse">
-                    <ul class="nav navbar-nav">
-                    </ul>
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-md-3"></div>
+                <div class="col-md-6">
+                    <h2>ログイン</h2>
+                    <div class="well">
+
+        <form action="login.php" method="post" class="form-horizontal">
+            <div class="form-group">
+                <label class="col-sm-4 control-label">ログイン名：</label>
+                <div class="col-sm-8">
+                    <input type="text" name="username" class="form-control">
                 </div>
             </div>
-        </nav>
-
-        <div class="container">
-            <div class="page-header">
-                <h3>ログインページ</h3>
+            <div class="form-group">
+                <label class="col-sm-4 control-label">パスワード：</label>
+                <div class="col-sm-8">
+                    <input type="password" name="password" class="form-control">
+                </div>
             </div>
-
-            <form action="login.php" method="post" class="form-horizontal" role="form">
-                <div class="form-group">
-                    <label class="col-md-2 control-label">ログイン名</label>
-                    <div class="col-md-4">
-                        <input type="text" name="username" class="form-control" />
+            <div class="form-group">
+                <div class="col-sm-offset-4 col-sm-8">
+                    <button type="submit" class="btn btn-default">ログイン</button>
+                </div>
+            </div>
+        </form>
                     </div>
                 </div>
-
-                <div class="form-group">
-                    <label class="col-md-2 control-label">パスワード</label>
-                    <div class="col-md-4">
-                        <input type="text" name="password" class="form-control" />
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div class="col-md-offset-2 col-md-10">
-                        <input type="submit" value="ログイン" class="btn btn-primary" />
-                    </div>
-                </div>
-
-            </form>
+                <div class="col-md-3"></div>
+            </div>
         </div>
     </body>
 

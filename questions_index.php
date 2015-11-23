@@ -1,49 +1,91 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8">
-        <title>くりっかー</title>
-        <link href="./css/bootstrap.min.css" rel="stylesheet">
-        <style type="text/css">
-body
+<?php
+session_start();
+
+//        print_r($_SESSION);
+// 共通機能読み込み
+require_once('common.php');
+
+if(!check_loggedin())
 {
-    padding-top: 50px;
+    header('Location: http://localhost/clickers/login_form.php');
 }
-        </style>
-        <script type="text/javascript" src="./js/jquery-2.1.4.min.js"></script>
-        <script type="text/javascript" src="./js/bootstrap.min.js"></script>
+?>
+<html>
+
+    <head>
+        <meta content="text/html; charset=utf-8">
+        <title>質問一覧</title>
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <script src="js/jquery-2.1.4.js"></script>
+        <script src="js/bootstrap.min.js"></script>
     </head>
 
     <body>
-        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-            <div class="container">
-                <div class="navbar-header">
-                    <a href="#" class="navbar-brand">くりっかー</a>
-                </div>
-                <div class="collapse navbar-collapse">
-                    <ul class="nav navbar-nav">
-                    </ul>
-                </div>
-            </div>
+        <nav class="navbar navbar-inverse">
+            <p class="navbar-text pull-right">
+                <?php echo $_SESSION['user_name']; ?>
+                <a href="logout.php" class="navbar-link">ログアウト</a>
+            </p>
         </nav>
 
-        <div class="container">
-            <div class="page-header">
-                <h3>質問一覧</h3>
-            </div>
+        <div class="container-fluid">
 
-            <table class="table">
+            <div class="row">
+                <div class="col-md-1"></div>
+                <div class="col-md-10">
+                    <h2>質問一覧</h2>
+        <?php
+
+        // データベース接続処理
+        $conn = connect_database();
+        if($conn)
+        {
+//            echo '接続成功';
+
+            // 検索SQL
+            $sql =<<<EOS
+SELECT `id`, `name` FROM `questions`
+EOS;
+
+            $stmt = $conn->prepare($sql);
+
+            $result = $stmt->execute();
+            ?>
+            <table class="table table-striped table-hover">
                 <tr>
-                    <th>ID</th>
+                    <th>質問ID</th>
                     <th>質問名</th>
-                    <th>回答</th>
+                    <th>操作</th>
                 </tr>
+            <?php
+            while($row = $stmt->fetch(PDO::FETCH_ASSOC))
+            {
+                ?>
                 <tr>
-                    <td>1</td>
-                    <td>りんごの色？</td>
-                    <td><a href="./answer_form.php" class="btn btn-primary">回答ページへ</a></td>
+                    <td><?php echo $row['id']; ?></td>
+                    <td><?php echo $row['name']; ?></td>
+                    <td>
+                        <?php $href = 'answer_form.php?question_id='.$row['id']; ?>
+                        <a href="<?php echo $href; ?>" class="btn btn-default">回答ページ</a>
+                        <?php $href = 'answer_results.php?question_id='.$row['id'];?>
+                        <a href="<?php echo $href; ?>" class="btn btn-default">回答結果ページ</a>
+                    </td>
                 </tr>
+
+            <?php
+            }
+            ?>
             </table>
+            <?php
+        }
+        else
+        {
+            echo '接続失敗';
+        }
+        ?>
+                </div>
+                <div class="col-md-1"></div>
+            </div>
         </div>
     </body>
 

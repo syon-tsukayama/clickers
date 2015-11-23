@@ -1,43 +1,113 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8">
-        <title>くりっかー</title>
-        <link href="./css/bootstrap.min.css" rel="stylesheet">
-        <style type="text/css">
-body
+<?php
+session_start();
+
+// 共通機能読み込み
+require_once('common.php');
+
+if(!check_loggedin())
 {
-    padding-top: 50px;
+    header('Location: http://localhost/clickers/login_form.php');
 }
-        </style>
-        <script type="text/javascript" src="./js/jquery-2.1.4.min.js"></script>
-        <script type="text/javascript" src="./js/bootstrap.min.js"></script>
+?>
+<html>
+
+    <head>
+        <meta content="text/html; charset=utf-8">
+        <title>回答登録</title>
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <script src="js/jquery-2.1.4.js"></script>
+        <script src="js/bootstrap.min.js"></script>
     </head>
 
     <body>
-        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-            <div class="container">
-                <div class="navbar-header">
-                    <a href="#" class="navbar-brand">くりっかー</a>
-                </div>
-                <div class="collapse navbar-collapse">
-                    <ul class="nav navbar-nav">
-                    </ul>
-                </div>
-            </div>
+        <nav class="navbar navbar-inverse">
+            <p class="navbar-text pull-right">
+                <?php echo $_SESSION['user_name']; ?>
+                <a href="logout.php" class="navbar-link">ログアウト</a>
+            </p>
         </nav>
 
-        <div class="container">
-            <div class="page-header">
-                <h3>回答結果</h3>
-            </div>
+        <div class="container-fluid">
 
-            <div>
-                <?php  
-                print_r($_POST);
-                ?>
+            <div class="row">
+                <div class="col-md-1"></div>
+                <div class="col-md-10">
+                    <h2>回答登録</h2>
+        <?php
+//        print_r($_SESSION);
+
+//        print_r($_POST);
+
+        // データベース接続処理
+        $conn = connect_database();
+        if($conn)
+        {
+
+            $question_id = trim($_POST['question_id']);
+            if(isset($_POST['answer_1']))
+            {
+                $answer_id = 1;
+            }
+            elseif(isset($_POST['answer_2']))
+            {
+                $answer_id = 2;
+            }
+            elseif(isset($_POST['answer_3']))
+            {
+                $answer_id = 3;
+            }
+            elseif(isset($_POST['answer_4']))
+            {
+                $answer_id = 4;
+            }
+            else
+            {
+                $answer_id = 0;
+            }
+
+            $user_id = $_SESSION['user_id'];
+
+            // 登録SQL
+            $sql =<<<EOS
+INSERT INTO `answer_results`
+(`question_id`, `answer_id`, `user_id`, `created`, `updated`)
+ VALUES (:question_id, :answer_id, :user_id, NOW(), NOW())
+EOS;
+
+            $stmt = $conn->prepare($sql);
+            $stmt->bindValue(':question_id', $question_id);
+            $stmt->bindValue(':answer_id', $answer_id);
+            $stmt->bindValue(':user_id', $user_id);
+
+            $result = $stmt->execute();
+
+            if($result)
+            {
+            ?>
+            <div class="alert alert-success" role="alert">
+                <?php echo '登録成功'; ?>
             </div>
-            
+            <?php
+            }
+            else
+            {
+            ?>
+            <div class="alert alert-danger" role="alert">
+                <?php echo '登録失敗'; ?>
+            </div>
+            <?php
+            }
+        }
+        else
+        {
+            echo '接続失敗';
+        }
+        ?>
+                    <a href="questions_index.php" class="btn btn-default">質問一覧へもどる</a>
+
+                </div>
+                <div class="col-md-1"></div>
+            </div>
         </div>
     </body>
 

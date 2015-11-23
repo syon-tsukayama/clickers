@@ -1,30 +1,16 @@
-<!DOCTYPE html>
 <html>
+
     <head>
-        <meta charset="utf-8">
-        <title>くりっかー</title>
-        <link href="./css/bootstrap.min.css" rel="stylesheet">
-        <style type="text/css">
-body
-{
-    padding-top: 50px;
-}
-        </style>
-        <script type="text/javascript" src="./js/jquery-2.1.4.min.js"></script>
-        <script type="text/javascript" src="./js/bootstrap.min.js"></script>
+        <meta content="text/html; charset=utf-8">
+        <title>ログイン結果</title>
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <script src="js/jquery-2.1.4.js"></script>
+        <script src="js/bootstrap.min.js"></script>
     </head>
 
     <body>
-        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-            <div class="container">
-                <div class="navbar-header">
-                    <a href="#" class="navbar-brand">くりっかー</a>
-                </div>
-                <div class="collapse navbar-collapse">
-                    <ul class="nav navbar-nav">
-                    </ul>
-                </div>
-            </div>
+        <nav class="navbar navbar-inverse">
+            <p class="navbar-text pull-right"><a href="logout.php" class="navbar-link">ログアウト</a></p>
         </nav>
 
         <div class="container">
@@ -32,12 +18,35 @@ body
                 <h3>ログイン結果</h3>
             </div>
 
-            <div>
-                <?php  
-                print_r($_POST);
+            if(isset($row['id']) && is_numeric($row['id']) && $row['id'] > 0)
+            {
+                $_SESSION['user_id'] = $row['id'];
+                $_SESSION['user_name'] = $row['username'];
                 ?>
+                <div class="alert alert-success" role="alert">
+                    <?php echo 'ログイン成功'; ?>
+                </div>
+                <a href="questions_index.php" class="btn btn-default">質問一覧</a>
+                <?php
+            }
+            else
+            {
+            ?>
+                <div class="alert alert-danger" role="alert">
+                    <?php echo 'ログイン失敗'; ?>
+                </div>
+                <a href="login_form.php" class="btn btn-default">ログインページへ</a>
+            <?php
+            }
+        }
+        else
+        {
+            echo '接続失敗';
+        }
+        ?>
+                </div>
+                <div class="col-md-1"></div>
             </div>
-            
         </div>
     </body>
 

@@ -1,37 +1,24 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8">
-        <title>くりっかー</title>
-        <link href="./css/bootstrap.min.css" rel="stylesheet">
-        <style type="text/css">
-body
+<?php
+session_start();
+
+//        print_r($_SESSION);
+// 共通機能読み込み
+require_once('common.php');
+
+if(!check_loggedin())
 {
-    padding-top: 50px;
+    header('Location: http://localhost/clickers/login_form.php');
 }
-        </style>
-        <script type="text/javascript" src="./js/jquery-2.1.4.min.js"></script>
-        <script type="text/javascript" src="./js/bootstrap.min.js"></script>
+?>
+<html>
+
+    <head>
+        <meta content="text/html; charset=utf-8">
+        <title>テストページ</title>
     </head>
 
     <body>
-        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-            <div class="container">
-                <div class="navbar-header">
-                    <a href="#" class="navbar-brand">くりっかー</a>
-                </div>
-                <div class="collapse navbar-collapse">
-                    <ul class="nav navbar-nav">
-                    </ul>
-                </div>
-            </div>
-        </nav>
-
-        <div class="container">
-            <div class="page-header">
-                <h3>テストトップページ</h3>
-            </div>
-        </div>
+        テストのページ
     </body>
 
 </html>
