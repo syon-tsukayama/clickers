@@ -16,7 +16,17 @@ require_once('common.php');
 
     <body>
         <nav class="navbar navbar-inverse">
-            <p class="navbar-text pull-right"><a href="logout.php" class="navbar-link">ログアウト</a></p>
+            <p class="navbar-text pull-right">
+                <?php
+                if(isset($_SESSION['user_name']))
+                {
+                    echo $_SESSION['user_name'];
+                ?>
+                <a href="logout.php" class="navbar-link">ログアウト</a>
+                <?php
+                }
+                ?>
+            </p>
         </nav>
 
         <div class="container">
