@@ -126,7 +126,12 @@ var myDoughnutChart = new Chart(document.getElementById("myChart").getContext("2
         }
         else
         {
-            echo '接続失敗';
+        ?>
+                <div class="alert alert-danger" role="alert">
+                    <?php echo 'データベース接続失敗'; ?>
+                </div>
+                <a href="login_form.php" class="btn btn-default">ログインページへ</a>
+        <?php
         }
         ?>
     </body>
