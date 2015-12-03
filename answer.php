@@ -6,7 +6,8 @@ require_once('common.php');
 
 if(!check_loggedin())
 {
-    header('Location: http://localhost/clickers/login_form.php');
+    $login_form_url = dirname($_SERVER['PHP_SELF']) . '/login_form.php';
+    header('Location: ' . $login_form_url);
 }
 ?>
 <html>
