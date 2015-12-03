@@ -1,7 +1,7 @@
 <html>
 
     <head>
-        <meta content="text/html; charset=utf-8">
+        <meta charset="UTF-8">
         <title>ログインページ</title>
         <link href="css/bootstrap.min.css" rel="stylesheet">
         <script src="js/jquery-2.1.4.js"></script>

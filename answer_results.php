@@ -13,7 +13,7 @@ if(!check_loggedin())
 <html>
 
     <head>
-        <meta content="text/html; charset=utf-8">
+        <meta charset="UTF-8">
         <title>回答結果</title>
         <script src="./js/Chart.js"></script>
     </head>
